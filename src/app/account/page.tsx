@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/server/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,13 @@ export default async function AccountPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between gap-4">
         <div>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-2"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to Shop
+          </Link>
           <h1 className="text-2xl font-bold tracking-tight">My Account</h1>
           <p className="text-sm text-muted-foreground">
             Manage your profile and track your past orders.

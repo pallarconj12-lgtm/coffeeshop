@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { OrderStatusSelect } from "@/components/admin/order-status-select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -128,11 +128,24 @@ export default async function AdminOrderDetailPage({
             <CardHeader>
               <CardTitle className="text-base">Fulfillment</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-1 text-sm">
+            <CardContent className="space-y-2 text-sm">
               <p className="capitalize font-medium">{order.fulfillment}</p>
               <p className="text-muted-foreground">
                 {order.delivery_address || "Pickup at the counter"}
               </p>
+              {order.fulfillment === "delivery" && order.delivery_address && (
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                    order.delivery_address
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline pt-1"
+                >
+                  <MapPin className="h-3.5 w-3.5" />
+                  Get Directions
+                </a>
+              )}
             </CardContent>
           </Card>
 

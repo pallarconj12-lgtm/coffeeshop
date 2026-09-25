@@ -26,6 +26,25 @@ export async function placeOrder(
 
   const supabase = createServiceRoleClient();
 
+  if (user) {
+    // orders.customer_id has a foreign key to public.customers(id), not
+    // directly to auth.users(id). An authenticated account can exist
+    // without a customers row (created outside the app's own signup flow,
+    // or otherwise out of sync), which would make this insert fail with a
+    // foreign-key violation. Self-heal it here using the checkout contact
+    // info, without clobbering an existing profile the customer may have
+    // already filled in on their account page.
+    await supabase.from("customers").upsert(
+      {
+        id: user.id,
+        email: contact.email || user.email || "",
+        full_name: contact.name,
+        phone: contact.phone || null,
+      },
+      { onConflict: "id", ignoreDuplicates: true }
+    );
+  }
+
   const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
   const { data: order, error: orderError } = await supabase

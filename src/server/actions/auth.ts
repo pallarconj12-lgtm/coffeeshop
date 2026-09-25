@@ -60,6 +60,33 @@ export async function signOut() {
   redirect("/");
 }
 
+export async function updateProfile(formData: FormData): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: "You must be signed in." };
+
+  const fullName = String(formData.get("fullName") ?? "").trim();
+  const phone = String(formData.get("phone") ?? "").trim();
+
+  if (!fullName) return { error: "Full name is required." };
+
+  // Upsert: some accounts (created before the customers table existed, or
+  // created outside this app) may not have a row here yet.
+  const { error } = await supabase.from("customers").upsert({
+    id: user.id,
+    email: user.email ?? "",
+    full_name: fullName,
+    phone: phone || null,
+  });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/account");
+}
+
 export async function staffLogin(formData: FormData): Promise<ActionResult> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");

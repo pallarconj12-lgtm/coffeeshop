@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Search, ShoppingBag, User, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -19,8 +20,15 @@ export function StorefrontNavbar({ storeName }: { storeName: string }) {
   return (
     <header className="border-b border-border/60">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-4 px-4 sm:px-6 lg:px-8 py-3">
-        <Link href="/" className="text-lg font-bold tracking-tight uppercase">
-          {storeName}
+        <Link href="/" className="flex items-center" aria-label={storeName}>
+          <Image
+            src="/logo.png"
+            alt={storeName}
+            width={634}
+            height={218}
+            priority
+            className="h-9 w-auto sm:h-10"
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm">
